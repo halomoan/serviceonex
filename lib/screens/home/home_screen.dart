@@ -14,22 +14,30 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          leading: Icon(Icons.menu, color: Colors.black),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.search, color: Colors.black),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.sort, color: Colors.black),
-              onPressed: () {},
-            )
-          ],
-        ),
+        appBar: buildAppBar(),
         body: Body(),
       ),
+    );
+  }
+
+  AppBar buildAppBar() {
+    return AppBar(
+      elevation: 0,
+      backgroundColor: Colors.white,
+      leading: IconButton(
+        icon: Icon(Icons.menu, color: Colors.black),
+        onPressed: () {},
+      ),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.search, color: Colors.black),
+          onPressed: () {},
+        ),
+        IconButton(
+          icon: Icon(Icons.sort, color: Colors.black),
+          onPressed: () {},
+        )
+      ],
     );
   }
 }
