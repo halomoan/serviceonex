@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:serviceonex/screens/home/components/maingroups.dart';
-import 'package:serviceonex/screens/home/components/tasks.dart';
 
 //https://github.com/abuanwar072/Movie-Info---Flutter-UI
 //https://www.youtube.com/watch?v=OgSLd2lH1FM&t=369s
@@ -12,7 +11,12 @@ class Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [MainGroupList(), Tasks()],
+      children: [
+        MainGroupList(),
+        SizedBox(
+          height: 10,
+        ),
+      ],
     );
   }
 }

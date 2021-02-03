@@ -16,7 +16,7 @@ class _MainGroupListState extends State<MainGroupList> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    final double maingroupHeight = size.height * 0.10;
+    final double maingroupHeight = size.height * 0.12;
     return Container(
         //decoration: BoxDecoration(color: kSecondaryColor),
         height: maingroupHeight,
