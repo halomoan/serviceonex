@@ -1,44 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:serviceonex/components/side_menu.dart';
+import 'package:serviceonex/responsive.dart';
+import 'package:serviceonex/screens/task_detail/task_detail_screen.dart';
 
-import 'components/body.dart';
+import 'components/list_of_tasks.dart';
 
-//https://www.youtube.com/watch?v=Cn6VCTaHB-k
-//https://github.com/retroportalstudio/flutter_itemstack_listview/blob/master/lib/main.dart
-//https://www.youtube.com/watch?v=CSa6Ocyog4U
-
-class HomeScreen extends StatelessWidget {
-  static String routeName = "home_screen";
-
-  //const HomeScreen({Key key}) : super(key: key);
+class MainScreen extends StatelessWidget {
+  static String routeName = "/main_screen";
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: buildAppBar(),
-        body: Body(),
-      ),
-    );
-  }
-
-  AppBar buildAppBar() {
-    return AppBar(
-      elevation: 0,
-      backgroundColor: Colors.white,
-      leading: IconButton(
-        icon: Icon(Icons.menu, color: Colors.black),
-        onPressed: () {},
-      ),
-      actions: <Widget>[
-        IconButton(
-          icon: Icon(Icons.search, color: Colors.black),
-          onPressed: () {},
+    // It provide us the width and height
+    Size _size = MediaQuery.of(context).size;
+    return Scaffold(
+      body: Responsive(
+        // Let's work on our mobile part
+        mobile: ListOfTasks(),
+        tablet: Row(
+          children: [
+            Expanded(
+              flex: 6,
+              child: ListOfTasks(),
+            ),
+            Expanded(
+              flex: 9,
+              child: TaskDetailScreen(),
+            ),
+          ],
         ),
-        IconButton(
-          icon: Icon(Icons.sort, color: Colors.black),
-          onPressed: () {},
-        )
-      ],
+        desktop: Row(
+          children: [
+            // Once our width is less then 1300 then it start showing errors
+            // Now there is no error if our width is less then 1340
+            Expanded(
+              flex: _size.width > 1340 ? 2 : 4,
+              child: SideMenu(),
+            ),
+            Expanded(
+              flex: _size.width > 1340 ? 3 : 5,
+              child: ListOfTasks(),
+            ),
+            Expanded(
+              flex: _size.width > 1340 ? 8 : 10,
+              child: TaskDetailScreen(),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
