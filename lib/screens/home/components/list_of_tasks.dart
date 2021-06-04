@@ -11,6 +11,8 @@ import 'task_card.dart';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 
+enum SortOption { ByDate, ByLocation }
+
 class ListOfTasks extends StatefulWidget {
   const ListOfTasks({
     Key key,
@@ -23,7 +25,10 @@ class ListOfTasks extends StatefulWidget {
 class _ListOfTasksState extends State<ListOfTasks> {
   List<Task> tasks = Utils.getMockTasks();
   List<Task> _tasks;
+  List<Task> _displayTask;
   bool searchMode = false;
+  bool sortDesc = true;
+  SortOption sortBy = SortOption.ByDate;
   final controller = TextEditingController();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -41,6 +46,28 @@ class _ListOfTasksState extends State<ListOfTasks> {
     } else {
       setState(() {
         searchMode = false;
+      });
+    }
+  }
+
+  void sortResults() {
+    if (sortBy == SortOption.ByDate) {
+      this.tasks.sort((Task a, Task b) {
+        if (this.sortDesc) {
+          return DateTime.parse(b.startDate)
+              .compareTo(DateTime.parse(a.startDate));
+        } else {
+          return DateTime.parse(a.startDate)
+              .compareTo(DateTime.parse(b.startDate));
+        }
+      });
+    } else if (sortBy == SortOption.ByLocation) {
+      this.tasks.sort((Task a, Task b) {
+        if (this.sortDesc) {
+          return b.locID > a.locID ? 1 : 0;
+        } else {
+          return b.locID > a.locID ? 0 : 1;
+        }
       });
     }
   }
@@ -116,24 +143,34 @@ class _ListOfTasksState extends State<ListOfTasks> {
                     const EdgeInsets.symmetric(horizontal: kDefaultPadding),
                 child: Row(
                   children: [
-                    MaterialButton(
-                      minWidth: 10,
-                      onPressed: () {},
-                      child: WebsafeSvg.asset(
-                        "assets/icons/Angle down.svg",
-                        width: 20,
-                      ),
-                    ),
-                    Text(
-                      "Sort by date",
-                      style: TextStyle(fontWeight: FontWeight.w500),
+                    // MaterialButton(
+                    //   minWidth: 10,
+                    //   onPressed: () {},
+                    //   child: WebsafeSvg.asset(
+                    //     "assets/icons/Angle down.svg",
+                    //     width: 20,
+                    //   ),
+                    // ),
+                    SortMenuList(
+                      sortOption: this.sortBy,
+                      onMenuSelected: (SortOption value) {
+                        this.sortBy = value;
+                        this.sortResults();
+                        setState(() {});
+                      },
                     ),
                     Spacer(),
                     MaterialButton(
                       minWidth: 20,
-                      onPressed: () {},
+                      onPressed: () {
+                        this.sortDesc = !this.sortDesc;
+                        this.sortResults();
+                        setState(() {});
+                      },
                       child: WebsafeSvg.asset(
-                        "assets/icons/Sort.svg",
+                        this.sortDesc
+                            ? "assets/icons/sortDesc.svg"
+                            : "assets/icons/sortAsc.svg",
                         width: 18,
                       ),
                     ),
@@ -163,6 +200,108 @@ class _ListOfTasksState extends State<ListOfTasks> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class SortMenuList extends StatelessWidget {
+  final SortOption sortOption;
+  final Function(SortOption) onMenuSelected;
+
+  const SortMenuList({@required this.sortOption, this.onMenuSelected});
+
+  String _getText() {
+    String _selectedMenu;
+    switch (this.sortOption) {
+      case SortOption.ByDate:
+        {
+          _selectedMenu = "Sort By Date";
+        }
+        break;
+      case SortOption.ByLocation:
+        {
+          _selectedMenu = "Sort By Location";
+        }
+        break;
+    }
+    return _selectedMenu;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          PopupMenuButton(
+              tooltip: 'Sort',
+              child: WebsafeSvg.asset(
+                "assets/icons/Angle down.svg",
+                width: 20,
+                color: Colors.black,
+              ),
+              onSelected: (value) {
+                onMenuSelected(value);
+              },
+              itemBuilder: (context) => [
+                    PopupMenuItem(
+                        value: SortOption.ByDate,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.date_range,
+                              color: Colors.black54,
+                              size: 22.0,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: 10.0,
+                              ),
+                              child: Text(
+                                "Sort By Date",
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 18.0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )),
+                    PopupMenuItem(
+                        value: SortOption.ByLocation,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.place,
+                              color: Colors.black54,
+                              size: 22.0,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: 10.0,
+                              ),
+                              child: Text(
+                                "Sort By Location",
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 18.0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ))
+                  ]),
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 8.0,
+            ),
+            child: Text(
+              _getText(),
+              style: TextStyle(fontWeight: FontWeight.w500),
+            ),
+          ),
+        ],
       ),
     );
   }
