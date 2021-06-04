@@ -8,6 +8,7 @@ class Task {
   final String title;
   final String statusID;
   final String status;
+  final int locID;
   final String location;
   final String startDate, endDate, startTime, endTime;
   final Color tagColor;
@@ -24,6 +25,7 @@ class Task {
     this.priorAssign,
     this.statusID,
     this.status,
+    this.locID,
     this.location,
     this.startDate,
     this.endDate,
